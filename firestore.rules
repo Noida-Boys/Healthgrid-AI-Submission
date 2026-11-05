@@ -1,0 +1,20 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Operational notifications follow the repository's current demo posture:
+    // anyone can read, but read/acknowledgement writes must use server routes.
+    // Production must replace this with authenticated facility assignments.
+    match /notifications/{notificationId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Demo posture: the command center is a public read-only view.
+    // All writes go through server routes using the Admin SDK (which
+    // bypasses rules), so clients can never write directly.
+    match /{document=**} {
+      allow read: if true;
+      allow write: if false;
+    }
+  }
+}

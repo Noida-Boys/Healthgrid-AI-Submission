@@ -1,0 +1,55 @@
+1
+00:00:00,600 --> 00:00:04,800
+Wardha district, Maharashtra — 15 public health centres, 1,600 patients a day.
+
+2
+00:00:05,000 --> 00:00:08,800
+Every dot is a live facility health score. Two are in crisis.
+
+3
+00:00:09,500 --> 00:00:14,300
+Click a facility. HealthGrid doesn't just show data — it explains it.
+
+4
+00:00:14,600 --> 00:00:20,000
+Stock-outs in 2 days. Half the doctors absent. Patients up 36%.
+
+5
+00:00:20,800 --> 00:00:24,400
+The AI recommends a guarded stock transfer. One click to approve.
+
+6
+00:00:24,600 --> 00:00:28,100
+Executed as a live transaction — both facilities re-score instantly.
+
+7
+00:00:29,000 --> 00:00:33,400
+Ask the Health Copilot anything — English, हिंदी or मराठी.
+
+8
+00:00:33,700 --> 00:00:42,000
+It answers only from live district data — grounded, cited, actionable.
+
+9
+00:00:43,000 --> 00:00:47,300
+Now the frontline. A health worker picks their language…
+
+10
+00:00:47,800 --> 00:00:53,800
+…and simply speaks: "आज ओआरएस का स्टॉक 50 बचा है"
+
+11
+00:00:54,300 --> 00:01:01,500
+Gemini turns speech into a structured update — confirmed by the worker, never auto-applied.
+
+12
+00:01:02,000 --> 00:01:07,800
+No forms. No paperwork. No English required.
+
+13
+00:01:08,600 --> 00:01:12,300
+And the district command center reacts in seconds.
+
+14
+00:01:12,500 --> 00:01:15,900
+30-day projection: all 54 stock-out days prevented, zero new stock. HealthGrid AI.

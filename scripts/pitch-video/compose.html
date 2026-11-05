@@ -1,0 +1,320 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600&family=Noto+Sans+Devanagari:wght@400;600&display=block">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;overflow:hidden;background:#000}
+body{font-family:'IBM Plex Sans','Noto Sans Devanagari',sans-serif;color:#EDF2EF}
+.scene{position:absolute;inset:0;background:#0A1116;overflow:hidden;display:none}
+.serif{font-family:'Source Serif 4','Noto Sans Devanagari',serif;font-weight:600;letter-spacing:-.01em}
+.hi{font-family:'Noto Sans Devanagari',sans-serif}
+.abs{position:absolute}
+.teal{color:#4FD1BF}.amber{color:#F0B54A}.red{color:#F0776C}.soft{color:#A9B9BC}
+.vid{position:absolute;overflow:hidden;background:#0A1116}
+.vid img{position:absolute;display:block}
+.framed{border-radius:22px;box-shadow:0 0 0 1px #2B3F49,0 30px 90px rgba(0,0,0,.6)}
+.lt{position:absolute;left:0;right:0;bottom:0;height:380px;background:linear-gradient(0deg,rgba(6,11,14,.96) 12%,rgba(6,11,14,0))}
+.cap{position:absolute;left:96px;bottom:84px;font-size:68px;line-height:1.12;width:1700px;text-shadow:0 2px 24px rgba(0,0,0,.7)}
+.glow{position:absolute;inset:0;background:radial-gradient(1100px 800px at 74% 40%,rgba(79,209,191,.12),transparent 70%)}
+.vig{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 58%,rgba(0,0,0,.42) 100%)}
+.check{display:flex;gap:28px;align-items:flex-start;margin-bottom:46px}
+.num{flex:none;width:58px;height:58px;border-radius:50%;border:2px solid #4FD1BF;color:#4FD1BF;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:600}
+.step-h{font-size:42px;font-weight:600;line-height:1.2}
+.step-b{font-size:32px;color:#A9B9BC;line-height:1.32;margin-top:8px}
+.bar-row{display:flex;align-items:center;gap:26px;margin-bottom:24px;font-size:36px}
+.bar-l{width:280px;color:#A9B9BC}
+.bar-t{height:30px;background:#4FD1BF;border-radius:4px;transform-origin:left center}
+.bubble{background:#12332C;border-radius:8px 28px 28px 28px;padding:40px 46px;font-size:36px;line-height:1.42;width:760px;box-shadow:0 24px 80px rgba(0,0,0,.5)}
+#fade{position:absolute;inset:0;background:#000;opacity:0;z-index:50}
+</style></head><body>
+
+<!-- HOOK -->
+<div class="scene" data-from="hook-0.6" data-to="problem-0.25">
+  <div class="glow"></div>
+  <div class="abs serif" style="left:130px;top:230px;width:1700px;font-size:84px;line-height:1.22">
+    <div class="a" data-t="hook+0" data-dim="hook+5">Right now, somewhere in India,</div>
+    <div class="a" data-t="hook+1.9" data-dim="hook+5">a mother has walked for hours.</div>
+    <div class="a" data-t="hook+4.9" data-dim="hook+7.9" style="margin-top:44px">The medicine her child needs ran out days ago.</div>
+    <div class="a amber" data-t="hook+7.9" style="margin-top:44px">The district won’t find out for a month.</div>
+  </div>
+</div>
+
+<!-- PROBLEM -->
+<div class="scene" data-from="problem-0.25" data-to="reveal-0.1">
+  <div class="abs serif teal" id="count" style="left:140px;top:120px;font-size:190px;line-height:1">0</div>
+  <div class="abs a" data-t="problem+1.2" style="left:146px;top:326px;font-size:50px">primary health centres</div>
+  <div class="abs a soft" data-t="problem+3.7" data-fx="left" style="left:930px;top:176px;font-size:70px;width:860px;line-height:1.15"><span class="serif" style="color:#EDF2EF">Run on paper registers.</span></div>
+  <div class="abs a" data-t="problem+5.0" style="left:140px;top:520px;width:1640px">
+    <div class="soft" style="font-size:38px;margin-bottom:36px">One month between reports</div>
+    <div id="days" style="display:grid;grid-template-columns:repeat(30,1fr);gap:9px"></div>
+  </div>
+  <div class="abs a red" data-t="problem+6.0" style="left:140px;top:700px;font-size:38px;font-weight:600;width:520px;line-height:1.25">Early in the month:<br>stock runs out</div>
+  <div class="abs a amber" data-t="problem+7.5" style="left:1250px;top:700px;font-size:38px;font-weight:600;width:530px;line-height:1.25;text-align:right">Day 30:<br>report reaches the district</div>
+  <div class="abs a serif" data-t="problem+8.2" data-fx="scale" style="left:140px;top:860px;font-size:76px;width:1640px">Patients have already been turned away.</div>
+</div>
+
+<!-- REVEAL -->
+<div class="scene" data-from="reveal-0.1" data-to="voice1-0.3">
+  <div class="vid" style="inset:0"><img id="heroA" data-still="hero" data-kb="960,520,1.34,960,540,1.5,reveal-0.1,voice1"></div>
+  <div class="abs" style="inset:0;background:radial-gradient(ellipse at center,rgba(8,14,18,.84) 28%,rgba(8,14,18,.55) 100%)"></div>
+  <div class="abs serif a" data-t="reveal+.35" data-fx="slam" style="left:0;right:0;top:300px;text-align:center;font-size:196px;font-weight:700">HealthGrid <span class="teal">AI</span></div>
+  <div class="abs a soft" data-t="reveal+1.95" style="left:0;right:0;top:580px;text-align:center;font-size:54px">Today’s systems record what happened.</div>
+  <div class="abs a serif" data-t="reveal+3.75" data-fx="scale" style="left:0;right:0;top:670px;text-align:center;font-size:82px;color:#4FD1BF">HealthGrid decides what to do next.</div>
+</div>
+
+<!-- VOICE -->
+<div class="scene" data-from="voice1-0.3" data-to="voice2+9.55">
+  <div class="glow" style="background:radial-gradient(900px 800px at 28% 50%,rgba(79,209,191,.14),transparent 70%)"></div>
+  <div class="vid framed" id="vbox" style="left:90px;top:250px;width:900px;height:580px"><img id="voiceclip" style="width:900px;left:0;top:0"></div>
+
+  <div class="abs" style="left:1060px;top:230px;width:790px">
+    <div class="a serif x" data-t="voice1+0" data-x="hindi-0.2" style="font-size:92px;line-height:1.1">It starts with a voice.</div>
+    <div class="a soft x" data-t="voice1+1.85" data-x="hindi-0.2" style="font-size:62px;margin-top:42px">No forms.</div>
+    <div class="a soft x" data-t="voice1+2.75" data-x="hindi-0.2" style="font-size:62px;margin-top:14px">One button.</div>
+  </div>
+
+  <div class="abs a x" data-t="hindi-0.1" data-x="voice2-0.1" style="left:1060px;top:190px;width:790px">
+    <div class="teal" style="font-size:34px;font-weight:600;letter-spacing:.06em;margin-bottom:30px">THE WORKER SPEAKS</div>
+    <div class="hi" style="font-size:50px;line-height:1.5;font-weight:600;white-space:nowrap">आज ओ आर एस का स्टॉक 50 बचा है,<br>और पैरासिटामोल 100 है</div>
+    <div class="soft" style="font-size:36px;margin-top:30px;line-height:1.3">“Today ORS stock is 50,<br>and Paracetamol is 100.”</div>
+    <div id="wave" style="display:flex;align-items:center;gap:7px;height:120px;margin-top:40px"></div>
+  </div>
+
+  <div class="abs" style="left:1060px;top:170px;width:790px">
+    <div class="check a" data-t="voice2+0.1" data-fx="left">
+      <div class="num">1</div><div><div class="step-h">Gnani Prisma hears it</div>
+      <div class="step-b">Hindi, Marathi, English, or mixed</div></div>
+    </div>
+    <div class="a hi" data-t="voice2+2.6" data-fx="left" style="font-size:36px;line-height:1.42;padding:22px 30px;background:#13232B;border-left:4px solid #4FD1BF;margin:-12px 0 44px 86px">“आज ORS का stock 50 बचा है और Paracetamol 100 है।”</div>
+    <div class="check a" data-t="voice2+5.25" data-fx="left">
+      <div class="num">2</div><div><div class="step-h">Gemini structures it</div>
+      <div class="step-b">ORS Sachets → 50 · Paracetamol → 100</div></div>
+    </div>
+    <div class="check a" data-t="voice2+8.1" data-fx="left">
+      <div class="num">3</div><div><div class="step-h">The worker confirms</div>
+      <div class="step-b">Nothing changes without a human</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- DISTRICT REACTS -->
+<div class="scene" data-from="voice2+9.55" data-to="command-0.2">
+  <div class="vid" style="inset:0"><img data-clip="f8" data-clip-from="voice2+9.55" data-kb="1100,470,1.55,1400,440,1.75,voice2+9.55,command"></div>
+  <div class="lt"></div>
+  <div class="cap serif a" data-t="voice2+9.75">The whole district reacts. <span class="teal">In seconds.</span></div>
+</div>
+
+<!-- COMMAND -->
+<div class="scene" data-from="command-0.2" data-to="command+4.3">
+  <div class="vid" style="inset:0"><img data-clip="f1" data-clip-from="command-0.2" data-kb="760,560,1.28,860,560,1.46,command-0.2,command+4.3"></div>
+  <div class="lt"></div>
+  <div class="cap serif a" data-t="command+0.1" data-x="command+2.6">What the district health officer sees.</div>
+  <div class="cap serif a" data-t="command+2.9">Every facility. <span class="teal">Scored live.</span></div>
+</div>
+<div class="scene" data-from="command+4.3" data-to="acts-0.2">
+  <div class="vid" style="inset:0"><img data-clip="f2" data-clip-from="command+3.4" data-kb="1640,340,2.35,1640,420,2.5,command+4.3,acts"></div>
+  <div class="lt"></div>
+  <div class="cap serif a" data-t="command+4.45">Not just what’s wrong. <span class="teal">Exactly why.</span></div>
+</div>
+
+<!-- ACTS -->
+<div class="scene" data-from="acts-0.2" data-to="stress-0.2">
+  <div class="glow" style="background:radial-gradient(900px 800px at 72% 50%,rgba(79,209,191,.11),transparent 70%)"></div>
+  <div class="vid framed" style="left:900px;top:90px;width:930px;height:900px"><img id="f4clip" data-kb="1640,300,1.75,1640,300,1.75,acts,stress"></div>
+  <div class="abs" id="ring" style="display:none;border:5px solid #F0B54A;border-radius:14px;box-shadow:0 0 34px rgba(240,181,74,.7)"></div>
+  <div class="abs serif a" data-t="acts+0" style="left:96px;top:110px;font-size:96px;width:780px">Then it acts.</div>
+  <div class="abs" style="left:96px;top:290px;width:760px">
+    <div class="check a" data-t="acts+3.5" data-fx="left"><div class="num">1</div><div><div class="step-h">Finds surplus nearby</div>
+    <div class="step-b">A centre with stock to spare</div></div></div>
+    <div class="check a" data-t="acts+5.7" data-fx="left"><div class="num">2</div><div><div class="step-h">Checks the safety limits</div>
+    <div class="step-b">Donor gives at most 40% and keeps over 14 days of supply</div></div></div>
+    <div class="check a" data-t="acts+8.4" data-fx="left"><div class="num">3</div><div><div class="step-h teal">One click from a human</div>
+    <div class="step-b">Then it executes, with a full audit trail</div></div></div>
+  </div>
+</div>
+
+<!-- STRESS: alert -->
+<div class="scene" data-from="stress-0.2" data-to="stress+2.85">
+  <div class="glow"></div>
+  <div class="abs serif a" data-t="stress+0" style="left:110px;top:330px;font-size:90px;line-height:1.14;width:800px">Alerts reach the frontline on <span class="teal">WhatsApp.</span></div>
+  <div class="abs bubble a" data-t="stress+0.5" data-fx="rise" style="left:1020px;top:210px">
+    <div class="teal" style="font-weight:600;margin-bottom:14px">HEALTHGRID OPERATIONAL ALERT</div>
+    Facility: Seloo PHC<br>Priority: CRITICAL<br>Medicine: ORS Sachets<br>Predicted stock-out: 2 days
+    <div class="soft" style="font-size:28px;text-align:right;margin-top:12px">Delivered · Read</div>
+  </div>
+</div>
+<!-- STRESS: flood -->
+<div class="scene" data-from="stress+2.85" data-to="trust-0.2">
+  <div class="vid" style="inset:0"><img data-clip="f6" data-clip-from="stress+1.6" data-kb="640,300,1.42,800,420,1.25,stress+2.85,trust"></div>
+  <div class="lt"></div>
+  <div class="cap serif a" data-t="stress+2.95" data-x="stress+5.3">A flood or a heatwave is coming?</div>
+  <div class="cap serif a" data-t="stress+5.6">It re-plans <span class="teal">before the shortage arrives.</span></div>
+</div>
+
+<!-- TRUST -->
+<div class="scene" data-from="trust-0.2" data-to="scale-0.2">
+  <div class="abs serif a" data-t="trust+0" style="left:120px;top:96px;font-size:78px;width:1700px">Every number comes from tested engines.</div>
+  <div class="abs" style="left:120px;top:262px;width:1660px">
+    <div class="bar-row a" data-t="trust+.5"><div class="bar-l">Medicines</div><div class="bar-t g" data-t="trust+.5" style="width:800px"></div><div>40</div></div>
+    <div class="bar-row a" data-t="trust+.7"><div class="bar-l">Staffing</div><div class="bar-t g" data-t="trust+.7" style="width:500px"></div><div>25</div></div>
+    <div class="bar-row a" data-t="trust+.9"><div class="bar-l">Beds</div><div class="bar-t g" data-t="trust+.9" style="width:300px"></div><div>15</div></div>
+    <div class="bar-row a" data-t="trust+1.1"><div class="bar-l">Patient surge</div><div class="bar-t g" data-t="trust+1.1" style="width:200px"></div><div>10</div></div>
+    <div class="bar-row a" data-t="trust+1.3"><div class="bar-l">Diagnostics</div><div class="bar-t g" data-t="trust+1.3" style="width:200px"></div><div>10</div></div>
+  </div>
+  <div class="abs serif a" data-t="trust+3.5" data-fx="scale" style="left:120px;top:720px;font-size:120px;width:800px">The AI explains.</div>
+  <div class="abs serif a teal" data-t="trust+4.7" data-fx="scale" style="left:1000px;top:720px;font-size:120px;width:800px">Humans decide.</div>
+</div>
+
+<!-- SCALE -->
+<div class="scene" data-from="scale-0.2" data-to="ask-0.2">
+  <canvas id="dots" width="900" height="900" class="abs" style="left:1050px;top:150px;width:780px;height:780px"></canvas>
+  <div class="abs" style="left:110px;top:120px;width:860px">
+    <div class="a soft" data-t="scale+0" style="font-size:54px">No new hardware.</div>
+    <div class="a soft" data-t="scale+1.15" style="font-size:54px;margin-top:10px">No rip and replace.</div>
+    <div style="height:90px"></div>
+    <div class="a serif" data-t="scale+2.6" data-fx="left" style="font-size:78px"><span class="teal">Prove</span> in one district.</div>
+    <div class="a serif" data-t="scale+4.0" data-fx="left" style="font-size:78px;margin-top:30px"><span class="teal">Fund</span> through the National Health Mission.</div>
+    <div class="a serif" data-t="scale+5.85" data-fx="left" style="font-size:78px;margin-top:30px"><span class="teal">Scale</span> to every district in India.</div>
+  </div>
+</div>
+
+<!-- ASK -->
+<div class="scene" data-from="ask-0.2" data-to="close-0.2">
+  <div class="abs a" data-t="ask+0" style="left:130px;top:210px;width:1660px">
+    <div class="teal" style="font-size:42px;font-weight:600;letter-spacing:.06em">WINNER · SMART HEALTH</div>
+    <div class="serif" style="font-size:112px;line-height:1.1;margin-top:24px">Google Cloud’s<br>Build with AI</div>
+  </div>
+  <div class="abs" id="wipe" style="left:0;top:0;width:1920px;height:1080px;background:#4FD1BF;transform-origin:left center;transform:scaleX(0)"></div>
+  <div class="abs serif a" data-t="ask+3.9" style="left:130px;top:280px;width:1660px;font-size:128px;line-height:1.12;color:#07211C">We’re looking for partners to take HealthGrid into its first real district.</div>
+</div>
+
+<!-- CLOSE -->
+<div class="scene" data-from="close-0.2" data-to="end-0.1">
+  <div class="vid" style="inset:0"><img data-still="hero" data-kb="880,500,1.34,960,540,1.46,close-0.2,end"></div>
+  <div class="abs" style="inset:0;background:rgba(8,14,18,.82)"></div>
+  <div class="abs serif" style="left:150px;top:290px;width:1620px;font-size:104px;line-height:1.2">
+    <div class="a" data-t="close+0">Often, the medicine is already in the district.</div>
+    <div class="a amber" data-t="close+3.05" style="margin-top:36px">It’s just in the wrong place.</div>
+  </div>
+</div>
+
+<!-- END CARD -->
+<div class="scene" data-from="end-0.1" data-to="total+1">
+  <div class="glow" style="background:radial-gradient(1000px 700px at 50% 45%,rgba(79,209,191,.14),transparent 70%)"></div>
+  <div class="abs serif a" data-t="end+0" data-fx="scale" style="left:0;right:0;top:340px;text-align:center;font-size:170px;font-weight:700">HealthGrid <span class="teal">AI</span></div>
+  <div class="abs a" data-t="end+.5" style="left:0;right:0;top:560px;text-align:center;font-size:52px">From a health worker’s voice to a district’s decision.</div>
+  <div class="abs a soft" data-t="end+1" style="left:0;right:0;top:700px;text-align:center;font-size:38px">Saatvik Das · Nishant Rajpathak — Team Noida Boys</div>
+</div>
+
+<div class="vig" id="vig" style="z-index:40"></div>
+<div id="fade"></div>
+
+<script>
+const TL = window.__TL;
+const T = (s) => { const m = /^([a-z0-9]+)([+-][\d.]+)?$/i.exec(s); return TL.at[m[1]] + (m[2] ? parseFloat(m[2]) : 0); };
+const clamp = (x,a=0,b=1) => Math.min(b,Math.max(a,x));
+const out = (x) => 1 - Math.pow(1-x,3);
+const lerp = (a,b,p) => a+(b-a)*p;
+const smooth = (x)=>x*x*(3-2*x);
+
+const days = document.getElementById("days");
+for (let i=0;i<30;i++){const d=document.createElement("div");d.style.cssText="height:64px;border-radius:5px;background:#1A2B33";days.appendChild(d);}
+const wave = document.getElementById("wave");
+for (let i=0;i<58;i++){const d=document.createElement("div");d.style.cssText="width:6px;background:#4FD1BF;border-radius:3px;height:8px";wave.appendChild(d);}
+
+const scenes = [...document.querySelectorAll(".scene")].map(el=>({el,a:T(el.dataset.from),b:T(el.dataset.to)}));
+const pend = [];
+function setImg(img,url){ if(img.dataset.cur===url) return; img.dataset.cur=url; img.src=url; pend.push(img.decode().catch(()=>{})); }
+function frameUrl(c,t){ const n=Math.min(TL.clips[c].frames, Math.max(1,Math.round(t*30)+1)); return `${TL.base}/${c}/${String(n).padStart(5,"0")}.jpg`; }
+function kb(img,W,H,t){
+  const k=img.dataset.kb.split(","); const t0=T(k[6]),t1=T(k[7]); const p=smooth(clamp((t-t0)/(t1-t0)));
+  const cx=lerp(+k[0],+k[3],p),cy=lerp(+k[1],+k[4],p),s=lerp(+k[2],+k[5],p);
+  img.style.width=(1920*s)+"px"; img.style.left=(W/2-cx*s)+"px"; img.style.top=(H/2-cy*s)+"px";
+  return s;
+}
+window.seek = async function(t){
+  pend.length=0;
+  scenes.forEach((sc,i)=>{
+    const on=t>=sc.a-0.001 && t<sc.b+0.001; sc.el.style.display=on?"block":"none";
+    if(on){ const isCut=sc.el.dataset.cut; sc.el.style.opacity=clamp((t-sc.a)/0.38); sc.el.style.zIndex=i+1; }
+  });
+  document.querySelectorAll(".a").forEach(el=>{
+    if(el.closest(".scene").style.display==="none") return;
+    const s=T(el.dataset.t), fx=el.dataset.fx||"rise", d=fx==="slam"?.45:.65; const p=out(clamp((t-s)/d));
+    let op=p, tr="";
+    if(fx==="rise") tr=`translateY(${(1-p)*34}px)`;
+    if(fx==="left") tr=`translateX(${(1-p)*-50}px)`;
+    if(fx==="scale") tr=`scale(${lerp(.95,1,p)})`;
+    if(fx==="slam") tr=`scale(${lerp(1.22,1,p)})`;
+    if(el.dataset.dim) op*=lerp(1,.34,clamp((t-T(el.dataset.dim))/.5));
+    if(el.dataset.x) op*=1-clamp((t-T(el.dataset.x))/.28);
+    el.style.opacity=op; el.style.transform=tr;
+  });
+  document.querySelectorAll(".bar-t.g").forEach(el=>{ el.style.transform=`scaleX(${out(clamp((t-T(el.dataset.t))/.9))})`; });
+  document.querySelectorAll("img[data-still]").forEach(img=>{
+    if(img.closest(".scene").style.display==="none") return;
+    setImg(img,`${TL.base}/${img.dataset.still}.png`); kb(img,1920,1080,t);
+  });
+  document.querySelectorAll("img[data-clip]").forEach(img=>{
+    if(img.closest(".scene").style.display==="none") return;
+    setImg(img,frameUrl(img.dataset.clip,Math.max(0,t-T(img.dataset.clipFrom)))); kb(img,1920,1080,t);
+  });
+
+  // count-up
+  document.getElementById("count").textContent="~"+Math.round(25000*out(clamp((t-T("problem"))/2))).toLocaleString("en-IN");
+  // month bar
+  const prog=clamp((t-T("problem+5.1"))/2.5)*30;
+  [...days.children].forEach((d,i)=>{ const lit=i<prog; d.style.background=!lit?"#1A2B33":i>=3&&i<29?"#6D2F2B":i<3?"#2C8F83":"#F0B54A"; });
+  // waveform: audible only while the Hindi line plays
+  const a=clamp((t-T("hindi"))/.2)*clamp((T("hindi")+TL.hindiLen-t)/.2);
+  [...wave.children].forEach((d,i)=>{
+    const v=.5+.5*Math.sin(t*11+i*.7)*Math.sin(t*5.3+i*.23); d.style.height=(8+a*v*104)+"px";
+  });
+  // voice clip: idle until the Hindi line, then real time, processing shortened to reach the card
+  const vh=T("hindi"), v2=T("voice2");
+  let vc;
+  if(t<vh) vc=0.5;
+  else if(t<v2) vc=2.0+(t-vh)*(5/(v2-vh));
+  else vc=Math.min(7+(t-v2)*(3.4/2.6),13.5);
+  const vimg=document.getElementById("voiceclip"); if(document.getElementById("vbox").closest(".scene").style.display!=="none") setImg(vimg,frameUrl("voice",vc));
+  // acts: frozen until the real click lands on "one click"
+  const f4=document.getElementById("f4clip");
+  if(f4.closest(".scene").style.display!=="none"){
+    const ft=Math.max(0,t-(T("acts+8.9")-1.75));
+    setImg(f4,frameUrl("f4",ft));
+    const s=kb(f4,930,900,t);
+    const ring=document.getElementById("ring");
+    const show=t>T("acts+7.9")&&ft<1.75;
+    ring.style.display=show?"block":"none";
+    if(show){
+      const x=900+465+(TL.btn.x-1640)*s, y=90+450+(TL.btn.y-300)*s;
+      const w=TL.btn.w*s,h=TL.btn.h*s,pulse=1+.05*Math.sin(t*9);
+      ring.style.cssText+=`;left:${x-w/2-8}px;top:${y-h/2-8}px;width:${w+16}px;height:${h+16}px;transform:scale(${pulse})`;
+      ring.style.display="block"; ring.style.zIndex=60;
+    }
+  }
+  // scale dots
+  const c=document.getElementById("dots");
+  if(c.closest(".scene").style.display!=="none"){
+    const g=c.getContext("2d"); g.clearRect(0,0,900,900);
+    const n=31,st=900/n,cx=450,cy=450;
+    const rSt=T("scale+4.0"),rAll=T("scale+5.85");
+    let R=t<T("scale+2.6")?-1:0;
+    if(t>=rSt) R=lerp(0,120,out(clamp((t-rSt)/1.2)));
+    if(t>=rAll) R=lerp(120,470,smooth(clamp((t-rAll)/2.0)));
+    for(let i=0;i<n;i++)for(let j=0;j<n;j++){
+      const x=st*(i+.5),y=st*(j+.5),dd=Math.hypot(x-cx,y-cy); if(dd>440) continue;
+      const lit=R>=0&&dd<=R+1;
+      g.beginPath();g.arc(x,y,lit?9:6,0,7);g.fillStyle=lit?"#4FD1BF":"#20323B";g.fill();
+    }
+  }
+  // ask wipe
+  document.getElementById("wipe").style.transform=`scaleX(${out(clamp((t-T("ask+3.45"))/.55))})`;
+  document.getElementById("vig").style.opacity=(t>T("ask+3.45")&&t<T("close-0.2"))?0:1;
+  // fade in / out of the whole film
+  const fade=document.getElementById("fade");
+  fade.style.opacity=Math.max(1-clamp(t/.5),clamp((t-(TL.total-.9))/.8));
+  await Promise.all(pend);
+};
+</script>
+</body></html>

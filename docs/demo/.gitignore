@@ -1,0 +1,7 @@
+
+# demo intermediates
+docs/demo/seg*
+docs/demo/joined.mp4
+docs/demo/check*.png
+docs/demo/qc-*.png
+docs/demo/list.txt

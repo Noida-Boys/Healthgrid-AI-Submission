@@ -1,0 +1,78 @@
+# Firebase App Hosting config. Public NEXT_PUBLIC_* keys are baked into the
+# client bundle (not secret) so they live inline. GEMINI_API_KEY is pulled from
+# Secret Manager; FIREBASE_SERVICE_ACCOUNT_B64 remains a temporary override.
+runConfig:
+  minInstances: 0
+  maxInstances: 2
+  cpu: 1
+  memoryMiB: 1024
+  concurrency: 80
+
+env:
+  # --- Gemini model selection (config, not secret) ---
+  - variable: GEMINI_MODEL
+    value: gemini-3.5-flash
+    availability:
+      - RUNTIME
+  - variable: GEMINI_FALLBACK_MODEL
+    value: gemini-3-flash-preview
+    availability:
+      - RUNTIME
+
+  # --- Public Firebase web config (needed at build + runtime) ---
+  - variable: NEXT_PUBLIC_FIREBASE_API_KEY
+    value: AIzaSyBhPGM0gCrDSrJFSd4DdRGUv9d-Eg2st8M
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_FIREBASE_PROJECT_ID
+    value: healthgrid-22146
+    availability:
+      - BUILD
+      - RUNTIME
+  - variable: NEXT_PUBLIC_FIREBASE_APP_ID
+    value: 1:695183016887:web:f80ffb3026edbbad851e32
+    availability:
+      - BUILD
+      - RUNTIME
+
+  # --- Google Maps JS key (public, restrict by referrer in Cloud console) ---
+  - variable: NEXT_PUBLIC_MAPS_API_KEY
+    value: AIzaSyCty_KSGV2HG--ZYlKT_EZRKxw0wTpjMa0
+    availability:
+      - BUILD
+      - RUNTIME
+
+  # --- Secrets (create with: firebase apphosting:secrets:set <NAME>) ---
+  - variable: GEMINI_API_KEY
+    secret: GEMINI_API_KEY
+    availability:
+      - RUNTIME
+  - variable: FIREBASE_SERVICE_ACCOUNT_B64
+    secret: FIREBASE_SERVICE_ACCOUNT_B64
+    availability:
+      - RUNTIME
+  - variable: GNANI_API_KEY
+    secret: GNANI_API_KEY
+    availability:
+      - RUNTIME
+  - variable: WHATSAPP_TOKEN
+    secret: WHATSAPP_TOKEN
+    availability:
+      - RUNTIME
+  - variable: WHATSAPP_PHONE_NUMBER_ID
+    secret: WHATSAPP_PHONE_NUMBER_ID
+    availability:
+      - RUNTIME
+  - variable: WHATSAPP_GRAPH_API_VERSION
+    value: v25.0
+    availability:
+      - RUNTIME
+  - variable: WHATSAPP_DEMO_RECIPIENT
+    value: "919810677347"
+    availability:
+      - RUNTIME
+  - variable: WHATSAPP_APP_SECRET
+    secret: WHATSAPP_APP_SECRET
+    availability:
+      - RUNTIME

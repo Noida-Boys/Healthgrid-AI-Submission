@@ -1,0 +1,12 @@
+node_modules
+.next
+.git
+.env*
+docs/demo
+docs/screenshots
+docs/deck-qa*
+npm-debug.log
+*.pptx
+*.pdf
+*.mp4
+serviceAccount*.json

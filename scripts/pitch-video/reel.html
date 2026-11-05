@@ -1,0 +1,98 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=block">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#0A1116}
+body{font-family:'IBM Plex Sans','Noto Sans Devanagari','Segoe UI Emoji',sans-serif;color:#EDF2EF}
+.abs{position:absolute}
+.scene{position:absolute;inset:0;background:#0A1116;overflow:hidden;display:none}
+.serif{font-family:'Source Serif 4','Noto Sans Devanagari',serif;font-weight:700;letter-spacing:-.01em}
+.teal{color:#4FD1BF}.amber{color:#F0B54A}.soft{color:#A9B9BC}
+.clip{position:absolute;left:0;top:540px;width:1080px;height:1120px;overflow:hidden;background:#0A1116;border-top:1px solid #24343D;border-bottom:1px solid #24343D}
+.clip img{width:1080px;display:block}
+.head{position:absolute;left:60px;right:60px;top:190px;font-size:64px;font-weight:700;line-height:1.14}
+.said{position:absolute;left:60px;right:60px;top:372px;font-size:40px;line-height:1.34;font-weight:500;color:#D5E0DD}
+.tick{display:inline-block}
+.note{position:absolute;left:60px;right:60px;top:1684px;font-size:27px;color:#8FA2A6}
+.dots{position:absolute;left:60px;top:132px;display:flex;gap:12px}
+.dots div{width:108px;height:10px;border-radius:5px;background:#22343D}
+#fade{position:absolute;inset:0;background:#000;opacity:0;z-index:50}
+.ring{position:absolute;border-radius:50%;border:4px solid #4FD1BF}
+</style></head><body>
+
+<div class="scene" id="intro">
+  <div class="clip"><img id="introimg"></div>
+  <div class="abs a serif" data-t="0" style="left:60px;right:60px;top:170px;font-size:84px;line-height:1.1">Testing if Indian AI can understand a health worker.</div>
+  <div class="abs a teal" data-t=".7" style="left:60px;top:462px;font-size:44px;font-weight:600">Level 1 → 5</div>
+</div>
+
+<div class="scene" id="levels">
+  <div class="dots" id="dots"></div>
+  <div class="head"><span class="teal" id="lvn"></span> <span id="lvt"></span> <span class="tick" id="tick">✅</span></div>
+  <div class="said" id="said"></div>
+  <div class="clip"><img id="lvimg"></div>
+  <div class="note" id="note"></div>
+  <div class="abs" id="readback" style="left:60px;right:60px;top:1684px;font-size:34px;font-weight:600;color:#4FD1BF"></div>
+</div>
+
+<div class="scene" id="map">
+  <img id="hero" class="abs" style="height:1920px">
+  <div class="abs" style="inset:0;background:linear-gradient(180deg,rgba(10,17,22,.93) 0%,rgba(10,17,22,.78) 48%,rgba(10,17,22,.2) 76%,rgba(10,17,22,.55) 100%)"></div>
+  <div id="rings"></div>
+  <div class="abs serif" style="left:70px;right:70px;top:210px;font-size:80px;line-height:1.14">
+    <div class="a" data-t="map+0" data-dim="map+1.95">25,000 health centres report on paper.</div>
+    <div class="a amber" data-t="map+1.95" data-dim="map+3.9" style="margin-top:38px">The district finds out a month later.</div>
+    <div class="a teal" data-t="map+3.9" style="margin-top:38px">Now it updates the moment she speaks.</div>
+  </div>
+</div>
+
+<div class="scene" id="built">
+  <div class="clip" style="top:610px"><img id="builtimg"></div>
+  <div class="abs a serif" data-t="built+0" style="left:60px;right:60px;top:180px;font-size:96px;line-height:1.08">Built on <span class="teal">@Gnani AI</span></div>
+  <div class="abs a" data-t="built+.5" style="left:60px;right:60px;top:410px;font-size:50px;line-height:1.3;font-weight:500">Prisma hears it.<br>Timbre says it back.</div>
+</div>
+
+<div class="scene" id="end">
+  <div class="abs" style="inset:0;background:radial-gradient(760px 760px at 50% 44%,rgba(79,209,191,.16),transparent 72%)"></div>
+  <div class="abs a serif" data-t="end+0" style="left:70px;right:70px;top:620px;font-size:108px;line-height:1.12;text-align:center">Which language should we test next?</div>
+  <div class="abs a" data-t="end+.45" style="left:0;right:0;top:1040px;text-align:center;font-size:110px">👇</div>
+  <div class="abs a soft" data-t="end+.9" style="left:0;right:0;top:1270px;text-align:center;font-size:44px;font-weight:600">HealthGrid <span class="teal">AI</span></div>
+</div>
+<div id="fade"></div>
+
+<script>
+const TL=window.__TL, $=(i)=>document.getElementById(i);
+const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x)), out=(x)=>1-Math.pow(1-x,3), smooth=(x)=>x*x*(3-2*x);
+const T=(s)=>{ if(typeof s==="number") return s; const m=/^([a-z0-9]+)([+-][\d.]+)?$/i.exec(String(s)); if(!m||!/[a-z]/i.test(m[1])) return parseFloat(s); return TL.at[m[1]]+(m[2]?parseFloat(m[2]):0); };
+const pend=[]; function setImg(img,url){ if(img.dataset.cur===url) return; img.dataset.cur=url; img.src=url; pend.push(img.decode().catch(()=>{})); }
+const frame=(d,t)=>`${TL.base}/${d}/${String(Math.max(1,Math.round(t*30)+1)).padStart(5,"0")}.jpg`;
+for(let i=0;i<5;i++) $("dots").appendChild(document.createElement("div"));
+const RINGS=[[877,500],[1260,789],[1170,668],[1030,790],[462,590],[770,573],[714,440],[1074,510],[933,393],[725,650]];
+RINGS.forEach(()=>{const d=document.createElement("div");d.className="ring";$("rings").appendChild(d);});
+window.seek=async function(t){
+  pend.length=0;
+  const on=(id,a,b)=>{const el=$(id),v=t>=a&&t<b;el.style.display=v?"block":"none";return v;};
+  on("intro",0,TL.at.level1); const lvOn=on("levels",TL.at.level1,TL.at.map); const mp=on("map",TL.at.map,TL.at.built); const bu=on("built",TL.at.built,TL.at.end); on("end",TL.at.end,TL.total+1);
+  document.querySelectorAll(".a").forEach(el=>{ if(el.closest(".scene").style.display==="none") return; const s=T(el.dataset.t),p=out(clamp((t-s)/.45)); let op=p; if(el.dataset.dim) op*=1-.66*clamp((t-T(el.dataset.dim))/.35); el.style.opacity=op; el.style.transform=`translateY(${(1-p)*26}px)`; });
+  if(t<TL.at.level1) setImg($("introimg"),frame(TL.levels[0].dir,.6));
+  if(lvOn){
+    const L=TL.levels; let i=L.length-1; while(i>0&&t<L[i].start) i--; const l=L[i], k=t-l.start;
+    $("lvn").textContent=`Level ${i+1}:`; $("lvt").textContent=l.title; $("said").textContent=l.said; $("said").className="said"; $("note").textContent=l.note;
+    [...$("dots").children].forEach((d,j)=>{d.style.background=j<i?"#4FD1BF":j===i?(k>=l.toCard?"#4FD1BF":"#F0B54A"):"#22343D";});
+    const pop=out(clamp((k-l.toCard)/.25)); $("tick").style.opacity=k>=l.toCard?1:0; $("tick").style.transform=`scale(${k>=l.toCard?1.5-.5*pop:1})`;
+    let ct; if(k<l.speech) ct=l.down+.5+Math.min(k,l.up-l.down-.8); else if(k<l.toCard) ct=l.up+.15+(k-l.speech); else ct=Math.min(l.card+(k-l.toCard),l.lastT);
+    setImg($("lvimg"),frame(l.dir,ct));
+    const rb=$("readback"); if(l.readback&&k>=l.toCard+.5){rb.style.display="block";rb.textContent="🔊 "+l.readback;$("note").style.display="none";} else {rb.style.display="none";$("note").style.display="block";}
+    const sc=1+.035*smooth(clamp(k/ (l.len||4))); $("lvimg").style.transform=`scale(${sc})`; $("lvimg").style.transformOrigin="50% 20%";
+  }
+  if(mp){
+    const k=t-TL.at.map,img=$("hero"); setImg(img,`${TL.base}/hero.png`);
+    const s=1920/1040*(1+.05*smooth(clamp(k/6))); img.style.height=(1040*s)+"px"; const cx=860; img.style.left=(540-cx*s)+"px"; img.style.top=(1320-600*s)+"px";
+    [...$("rings").children].forEach((d,j)=>{ const [x,y]=RINGS[j]; const st=3.9+j*.1,p=clamp((k-st)/.9); const r=20+p*80; d.style.display=(k>st&&p<1)?"block":"none"; d.style.left=(540+(x-cx)*s-r)+"px"; d.style.top=(1320+(y-600)*s-r)+"px"; d.style.width=d.style.height=(2*r)+"px"; d.style.opacity=(1-p)*.9; });
+  }
+  if(bu){ const l=TL.levels[3]; setImg($("builtimg"),frame(l.dir,l.lastT)); }
+  $("fade").style.opacity=Math.max(1-clamp(t/.25),clamp((t-(TL.total-.6))/.5));
+  await Promise.all(pend);
+};
+</script></body></html>

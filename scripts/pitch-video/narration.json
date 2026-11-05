@@ -1,0 +1,14 @@
+[
+  { "id": "hook", "text": "Right now, somewhere in India, a mother has walked for hours to reach a health centre. The medicine her child needs ran out days ago. And the district won't find out for a month." },
+  { "id": "problem", "text": "India's primary healthcare runs on twenty five thousand health centres, and paper registers. The data reaches the district in monthly reports. By then, patients have already been turned away." },
+  { "id": "reveal", "text": "So we built HealthGrid AI. Today's systems record what happened. HealthGrid decides what to do next." },
+  { "id": "voice1", "text": "It starts with a voice. No forms. A health worker holds one button, and speaks." },
+  { "id": "voice2", "text": "Gnani's speech engine understands Hindi, Marathi, English, even all of them mixed together. Gemini turns those words into a structured update. The worker confirms it. And the whole district reacts, in seconds." },
+  { "id": "command", "text": "This is what the district health officer sees. Every facility, scored live. Not just what's wrong, but exactly why." },
+  { "id": "acts", "text": "Then it acts. A centre is running out of medicine? HealthGrid finds a nearby centre with surplus, checks the safety limits, and proposes a transfer. One click from a human, and it's done." },
+  { "id": "stress", "text": "Alerts reach the frontline on WhatsApp. And when a flood or a heatwave is coming, HealthGrid re-plans the district before the shortage arrives." },
+  { "id": "trust", "text": "Every number comes from tested, deterministic engines. The AI explains. Humans decide." },
+  { "id": "scale", "text": "No new hardware. No rip and replace. One district to prove it. The National Health Mission to fund it. And a path to every district in India." },
+  { "id": "ask", "text": "We won Google Cloud's Build with AI in Smart Health. Now, we're looking for partners to take HealthGrid into its first real district." },
+  { "id": "close", "text": "Because often, the medicine is already in the district. It's just in the wrong place. HealthGrid fixes that." }
+]
