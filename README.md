@@ -38,7 +38,7 @@ Prisma supplies the transcript used by the rest of the voice pipeline. If transc
 
 ## Challenge models and the implementation in this repository
 
-The [internship challenge page](https://www.gnani.ai/internship) highlights **Prisma v2.5** and **Timbre v2.5**. HealthGrid uses the same Gnani speech-model families, with the following versions in the current code:
+The [internship challenge page](https://www.gnani.ai/internship) highlights . HealthGrid uses Gnani's flagship speech-model families **Prisma v2.5** and **Timbre v2.5**, with the following versions in the current code:
 
 | Speech capability | Model highlighted by the challenge | Current HealthGrid default |
 | --- | --- | --- |
