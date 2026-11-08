@@ -1,161 +1,225 @@
 # HealthGrid AI
 
-## 🏆 Winner of Google Cloud X Hack2Skill "Build with AI: Code for Communities"
+**Speak a facility update. Hear it back. Help the district act.**
 
-**An AI command center for district public healthcare.** HMIS systems record what happened; HealthGrid decides what to do next — and a health worker speaking Hindi into a phone changes the district map in front of the District Health Officer's eyes.
+HealthGrid AI is a voice-enabled public healthcare command center, presented for [Gnani AI's Great Indian AI Internship Challenge](https://www.gnani.ai/internship). It connects a frontline health worker's spoken report to a live district view of medicine stock, available doctors, occupied beds, and diagnostic readiness.
 
-Built for the Google **Build with AI — Code for Communities** hackathon · Smart Health track.
+**Gnani is the core of HealthGrid's voice workflow:** Prisma turns a worker's speech into text, and Timbre reads the proposed update back before the worker approves it. That exchange makes the operational dashboard usable from the field, where typing a detailed report can interrupt patient-facing work.
 
-![District Command Center](docs/screenshots/01-command-center.png)
+[Explore the speech integration](lib/gnani.ts) · [Field interface](components/field/VoiceUpdate.tsx) · [Gnani developer docs](https://docs.gnani.ai) · [API console](https://app.gnani.ai/voice)
 
-## The problem
+![HealthGrid district command center](docs/screenshots/01-command-center.png)
 
-India's ~25,000 PHCs and ~5,000 CHCs run on paper registers and monthly reports. Medicine stock-outs, doctor absences, and bed shortages are discovered **after** patients are turned away. The data that could prevent this — daily stock levels, attendance, footfall — is trapped at the facility and reaches the district weeks late, if at all.
+## The problem: decisions need information from the field
 
-## What HealthGrid does
+A district can only respond to a medicine shortage or a staffing gap when someone reports it. A worker may know that only 50 ORS packets remain, that two doctors are present, or that the diagnostic machine has stopped working, while the district still sees yesterday's information.
 
-One continuous loop: **Observe → Understand → Predict → Recommend → Approve → Execute → Monitor.**
+HealthGrid gives that worker a short, spoken reporting workflow and gives the district a shared view of what changed. The intended users are:
 
-| Capability | How it works |
-|---|---|
-| 🗺️ **Live district map** | Every facility scored 0–100 by a deterministic risk engine (medicines 40 · staffing 25 · beds 15 · surge 10 · diagnostics 10), rendered on dark-styled Google Maps with realtime Firestore listeners — no refresh, ever. |
-| 📉 **Stock-out forecasting** | Weighted burn-rate model (7-day/30-day consumption, patient-trend amplified) computes days-to-stock-out per medicine per facility. |
-| 🔎 **AI root-cause analysis** | Gemini explains *why* a facility is at risk, grounded strictly in the live snapshot — every claim cites a number from the data. |
-| 🔁 **Guarded transfer recommendations** | Gemini proposes stock transfers from pre-filtered surplus donors; the server **clamps every quantity** (≤40% of donor stock, donor keeps >14 days supply) before anything is shown. One click executes the transfer as a Firestore transaction and both facilities re-score live. |
-| 💬 **Health Copilot** | Gemini function-calling over four live-data tools (`getDistrictSummary`, `getFacility`, `getForecasts`, `listFacilities`). Ask in English or Hindi. It can never disagree with the screen, because it reads the same engines. |
-| 🎙️ **Hindi voice updates** | A frontline worker holds a button and says *"आज ओआरएस का स्टॉक 50 बचा है"*. Gemini's audio understanding returns a structured update, the worker confirms on screen, the district re-scores, and the map reacts in seconds. |
+- **Frontline workers at PHCs and CHCs:** report facility conditions in the language they use at work.
+- **District health officers:** see changing risk, inspect shortages, and review possible interventions.
+- **Facility teams:** receive operational notifications and acknowledge follow-up actions.
 
-![Facility intelligence panel](docs/screenshots/02-facility-panel.png)
+The application focuses on facility operations: inventory, staffing, beds, and diagnostics.
 
-## Measured impact
+## Why Gnani is central
 
-We replayed the district's 90 days of history and projected the next 30 days with and without HealthGrid's transfer policy (same deterministic engines, reproducible via `npx tsx scripts/impact-sim.ts`):
+The voice interaction is the bridge between the person at the facility and the district's decision tools. Both sides of that interaction use Gnani.
 
-> **54 facility-medicine stock-out days across 5 facilities in the next 30 days — reduced to 0** by 31 guarded transfers redistributing 5,157 units of existing district stock. **Zero new medicine purchased.**
+| Gnani component | Role in HealthGrid | Why it matters |
+| --- | --- | --- |
+| **Prisma speech-to-text** | Transcribes the worker's recording before structured extraction begins. | Spoken updates become information the application can process, without requiring the worker to fill out each field manually. |
+| **Timbre text-to-speech** | Speaks the proposed confirmation in the selected interface language. | The worker can listen to the interpretation, review the quantities, and decide whether to save it. |
+| **Gnani Speech APIs** | Run behind HealthGrid's server routes using a server-side API key. | The browser can offer recording and playback without exposing the speech API credential. |
 
-The simulation assumes replenishment continues on each facility's observed cadence; HealthGrid's only intervention is the same guarded transfer recommendation shown in the UI. In other words: the medicines to prevent every projected stock-out already exist inside the district — what's missing is the visibility and coordination layer.
+Prisma supplies the transcript used by the rest of the voice pipeline. If transcription fails, the application asks the worker to retry; it does not silently send the audio to another speech provider. Timbre supplies audible feedback, with the written confirmation still available if playback fails. Manual entry remains available.
 
-## Fits the existing stack — a decision layer, not a replacement
+**Gnani powers listening and speaking.** Gemini supports text interpretation and district explanations; deterministic application logic calculates risk and forecasts; Firestore distributes confirmed changes. These components give the spoken report somewhere useful to go.
 
-India's public health system already records this data: **HMIS** captures facility reporting, and **DVDMS/eVIN** track drug inventory and logistics. What those systems don't do is *decide* — data flows up as monthly aggregates, and interventions flow back down weeks later. HealthGrid is designed as the **decision layer on top of that existing pipeline**:
+## Challenge models and the implementation in this repository
 
-- **Ingest:** facility state can be hydrated from HMIS/DVDMS exports (the Firestore schema mirrors their entities: facility → inventory → consumption); the voice/field interface fills the real-time gap between monthly reports rather than replacing them.
-- **Act:** recommendations and approvals generate an audit trail (`events` collection) that maps directly onto the existing indent/transfer paperwork.
-- **No rip-and-replace:** district administrators keep their systems of record; HealthGrid turns those records into same-day decisions.
+The [internship challenge page](https://www.gnani.ai/internship) highlights **Prisma v2.5** and **Timbre v2.5**. HealthGrid uses the same Gnani speech-model families, with the following versions in the current code:
 
-## Why the AI is defensible
+| Speech capability | Model highlighted by the challenge | Current HealthGrid default |
+| --- | --- | --- |
+| Speech-to-text | **Prisma v2.5** | **Prisma v3.0** — `prisma-v3.0` |
+| Text-to-speech | **Timbre v2.5** | **Timbre v3.0** — `timbre-v3.0`, voice `Shivani` |
 
-Every number on screen comes from **deterministic engines we wrote and unit-tested** (45 tests) — risk scoring, burn-rate forecasting, transfer guardrails. Gemini does what LLMs are actually good at: explanation, structured proposals, tool-calling, and multilingual audio understanding. AI proposals are validated and clamped server-side before display; nothing writes to the database without human confirmation.
+The current implementation is documented in [`lib/gnani.ts`](lib/gnani.ts) and [`.env.example`](.env.example). **This checkout uses v3.0 defaults; it is not a verified v2.5 deployment.**
+
+Prisma v2.5 is relevant to the same field-reporting task: it accepts a chosen language and supports transcription with number formatting. Timbre v2.5 provides speech generation with voices suited to particular languages. See the official [Prisma v2.5 reference](https://docs.gnani.ai/api/STT/models/prisma-v2-5), [Timbre API reference](https://docs.gnani.ai/api/TTS/tts-inference), and [voice catalog](https://docs.gnani.ai/api/TTS/available-voices).
+
+For anyone adapting this checkout to v2.5: the `/stt/v3` URL is an API version, not a model version. Prisma v2.5 needs an explicit language for REST requests, while HealthGrid currently sends `indic-auto`. Timbre v2.5 also needs a voice from its own catalog; `Shivani` belongs to v3.0. Changing only the two model environment variables is therefore insufficient. The current v3.0 integration is retained here.
+
+## From a spoken update to a district action
+
+For example, a worker can report:
+
+> “आज ओआरएस का स्टॉक 50 बचा है और दो डॉक्टर आए हैं।”
+
+The intended meaning is: **50 ORS packets remain, and two doctors are present.**
+
+1. **Speak.** On `/field`, the worker selects a facility and interface language, then holds the microphone button. The browser captures mono, 16 kHz WAV audio and stops recording before 30 seconds.
+2. **Transcribe with Prisma.** `POST /api/ai/voice` sends the recording to Gnani. The current Prisma v3.0 configuration uses automatic language detection.
+3. **Interpret the transcript.** Gemini receives the text and the selected facility's current state. It proposes structured updates and a confirmation in the worker's interface language. “50 remaining” and “50 used” are treated as different instructions.
+4. **Listen with Timbre.** For a proposal that passes the interface's confidence threshold, `POST /api/ai/speak` generates the spoken confirmation. The transcript and proposed values are also shown on screen, and the confirmation can be replayed.
+5. **Approve.** The worker confirms or cancels. Recording and transcription alone do not save an update.
+6. **Update the district.** Confirmation sends the proposed values to the facility update route. A Firestore transaction applies the change and recalculates facility risk; realtime listeners update the district view.
+
+The field interface offers **Hindi, Marathi, and English**. Examples for demonstrating the workflow include:
+
+| Interface language | Example report | Intended update |
+| --- | --- | --- |
+| Hindi | “आज ओआरएस का स्टॉक 50 बचा है।” | Set ORS stock to 50. |
+| Marathi | “आज दोन डॉक्टर आले आहेत.” | Set doctors present to two. |
+| English | “Only 50 ORS packets are left and two doctors are present.” | Update stock and doctor attendance together. |
+| Hindi with English terms | “ORS stock 50 बचा है।” | Test a familiar mixed-language reporting pattern. |
+
+These are suggested demo inputs, not a published speech-accuracy benchmark. Review the actual transcript and proposed values before confirming.
+
+![HealthGrid field interface](docs/screenshots/04-field-screen.png)
 
 ## Architecture
 
 ```mermaid
-flowchart LR
-  subgraph Field["📱 Field worker (/field)"]
-    V[Hindi voice / manual updates]
-  end
-  subgraph Server["Next.js API routes (server-only)"]
-    G[Gemini: insights · recommendations · copilot · audio]
-    E[Engines: risk · forecast · guardrails]
-    A[Transactional writes<br/>firebase-admin]
-  end
-  subgraph Data["Cloud Firestore"]
-    F[(facilities · history 90d ·<br/>recommendations · events)]
-  end
-  subgraph DHO["🖥️ Command center (/)"]
-    M[Google Maps digital twin]
-    P[Facility panel · AI rail · Copilot]
-  end
-  V -->|audio| G --> E
-  E --> A --> F
-  F -->|onSnapshot realtime| M & P
-  P -->|approve| A
+flowchart TD
+    Worker["Worker: Hindi / Marathi / English"]
+    Capture["Field interface: record WAV"]
+    Prisma["Gnani Prisma v3.0: speech to text"]
+    Parse["Gemini: transcript to proposed updates"]
+    Review["Transcript + proposed values"]
+    Timbre["Gnani Timbre v3.0: spoken confirmation"]
+    Confirm{"Worker approves?"}
+    Write["Server: apply update + calculate risk"]
+    Store[("Cloud Firestore")]
+    District["Live district map + facility panels"]
+    Actions["Officer reviews interventions"]
+
+    Worker --> Capture --> Prisma --> Parse --> Review
+    Parse --> Timbre --> Worker
+    Review --> Confirm
+    Confirm -->|Yes| Write --> Store --> District --> Actions
+    Confirm -->|Cancel / retry| Capture
 ```
 
-**Google technologies:** Gemini API (structured outputs, function calling, audio understanding, multilingual), Cloud Firestore (realtime sync), Google Maps Platform (district digital twin), Firebase (hosting & admin SDK), Next.js on Firebase App Hosting.
+The recording is processed as a short REST request after capture. HealthGrid does not currently implement continuous speech streaming or a telephone calling interface.
 
-## Data methodology
+### Code to inspect
 
-Operational data (daily stock, attendance, footfall) does not exist publicly for Indian PHCs — that gap **is the problem HealthGrid solves**. The demo district is **synthetic but realistic**: real Wardha (Maharashtra) geography and facility types, 90 days of generated history with seasonality and noise, parameters calibrated to public figures from National Health Mission / Rural Health Statistics reporting (facility staffing norms, OPD footfall ranges, stock-out prevalence). The generator is deterministic and unit-tested (`lib/data/generate.ts`); all synthetic data is labeled as such.
+| File | Responsibility |
+| --- | --- |
+| [`lib/gnani.ts`](lib/gnani.ts) | Gnani authentication, model defaults, STT requests, and TTS synthesis. |
+| [`lib/wav-recorder.ts`](lib/wav-recorder.ts) | Browser microphone capture and WAV encoding. |
+| [`app/api/ai/voice/route.ts`](app/api/ai/voice/route.ts) | Prisma transcription followed by structured interpretation of the transcript. |
+| [`app/api/ai/speak/route.ts`](app/api/ai/speak/route.ts) | Timbre confirmation audio returned as WAV. |
+| [`components/field/VoiceUpdate.tsx`](components/field/VoiceUpdate.tsx) | Record, review, listen, retry, cancel, and confirm interactions. |
+| [`app/api/actions/update-facility/route.ts`](app/api/actions/update-facility/route.ts) | Apply confirmed updates in a Firestore transaction. |
+| [`lib/engine/`](lib/engine/) | Risk scoring, stock-out forecasting, and transfer guardrails. |
 
-## Getting started
+## What the district can do with the update
+
+| Capability | Operational purpose |
+| --- | --- |
+| **Live facility map** | Show changing facility conditions and risk scores as confirmed reports arrive. |
+| **Stock-out forecasts** | Estimate days of supply from stock, consumption, and patient trends. |
+| **Facility explanations** | Use Gemini to explain risks using the available facility data. |
+| **Guarded transfer proposals** | Suggest redistribution from surplus facilities, with server-side quantity limits and officer approval. |
+| **Health Copilot** | Answer questions through tools that read district and facility data. |
+| **Operational notifications** | Send facility reports in-app, optionally through WhatsApp, and track read and acknowledgement state. |
+| **District PDF report** | Export a situation report using the same risk and forecast engines as the dashboard. |
+
+![Facility intelligence panel](docs/screenshots/02-facility-panel.png)
+
+The value of the voice workflow is the connection: a worker's Gnani-powered report supplies fresh information for these decisions.
+
+## Run locally
+
+Use Node.js 20 or later, a Gnani API key, a Gemini API key, a Firebase project with Firestore access, and a Google Maps browser key.
 
 ```bash
-npm install
-cp .env.example .env.local   # fill in Gemini, Firebase web config, and Maps keys
-npm run check-keys           # verifies all three credentials
-npm run seed                 # seeds the Wardha district into Firestore
-npm run dev                  # http://localhost:3000 (DHO) · /field (worker)
+git clone https://github.com/Noida-Boys/Healthgrid-AI-Submission.git
+cd Healthgrid-AI-Submission
+npm ci
 ```
 
-Firebase Admin supports two local credential modes. Either set
-`FIREBASE_SERVICE_ACCOUNT_B64` in `.env.local`, or leave it unset and configure
-Application Default Credentials:
+Copy [`.env.example`](.env.example) to `.env.local` (`Copy-Item .env.example .env.local` in PowerShell, or `cp .env.example .env.local` in Bash).
+
+### Configure Gnani first
+
+Create a key in the [Gnani API console](https://app.gnani.ai/voice). The current application defaults are:
+
+```dotenv
+GNANI_API_KEY=your_gnani_api_key
+GNANI_STT_MODEL=prisma-v3.0
+GNANI_TTS_MODEL=timbre-v3.0
+GNANI_TTS_VOICE=Shivani
+```
+
+Keep `GNANI_API_KEY` server-side. For deployment, provide it through the runtime secret manager; [`apphosting.yaml`](apphosting.yaml) already references a secret with that name.
+
+Fill in the remaining values in `.env.local`:
+
+```dotenv
+GEMINI_API_KEY=your_gemini_api_key
+NEXT_PUBLIC_FIREBASE_API_KEY=your_firebase_web_key
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
+NEXT_PUBLIC_FIREBASE_APP_ID=your_firebase_app_id
+NEXT_PUBLIC_MAPS_API_KEY=your_maps_browser_key
+```
+
+Firebase Admin can use Application Default Credentials:
 
 ```bash
 gcloud auth application-default login
-gcloud config set project healthgrid-22146
+gcloud config set project YOUR_PROJECT_ID
 ```
 
-Do not commit a service-account JSON file. In Cloud Run, leave the Base64
-override unset after migration verification; Admin uses the service account
-attached to the `healthgrid` service.
-
-| Script | Purpose |
-|---|---|
-| `npm run seed -- --demo-date 2026-07-05` | Reseed with stock-outs timed relative to a date |
-| `npm run check-keys` | Verify Gemini + Firestore + Maps credentials |
-| `npm test` | 45 engine tests (risk, forecast, guardrails, generator) |
-| `npx tsx --env-file=.env.local scripts/deploy-rules.ts` | Publish Firestore security rules |
-
-## District situation report (PDF)
-
-The command center header has a **District report ↓** button that downloads a full PDF situation report — district summary, an all-facility triage table sorted most-urgent first, and per-facility score breakdowns with medicine stock-out forecasts. It is generated server-side (`GET /api/report/district`) from the same deterministic engines that power the screen, so the report can never disagree with the map. Built with pdf-lib (pure JS, no runtime font files), so it works unchanged on Cloud Run.
-
-## Operational Notification Center
-
-HealthGrid now closes the operational loop: **Detect → Recommend → Notify → Acknowledge → Monitor**. Selecting a facility in the Command Centre generates a deterministic report from its live risk, forecast, inventory, and pending redistribution data. The administrator can edit it, send it in-app and optionally through WhatsApp, and watch read/acknowledgement state update in realtime. Field View has a facility-scoped inbox with deliberate read and explicit acknowledgement actions.
-
-The server architecture is modular: `NotificationService` persists one document through `FirestoreNotificationRepository`, then dispatches through common in-app, WhatsApp, and disabled-SMS adapters. WhatsApp failure never rolls back the in-app notification.
-
-### Firestore schema and API routes
-
-Notifications are stored in `notifications/{notificationId}` with facility identity, title/report/priority, selected `channels`, per-channel `channelStatus`, aggregate `status`, read/acknowledgement fields, creator, and Firestore server timestamps. The Field inbox queries by `facilityId` and sorts client-side, so no composite index is required.
-
-- `POST /api/actions/notify` — validates the edited report, reloads trusted facility data, creates one notification, and dispatches selected channels.
-- `POST /api/actions/notifications/[notificationId]/read` — idempotently marks one notification read.
-- `POST /api/actions/notifications/[notificationId]/acknowledge` — idempotently acknowledges and also sets read state.
-
-Current Firestore rules intentionally retain the hackathon demo posture: public reads and no client writes. All notification mutations use Firebase Admin routes. Before production, add authentication and facility assignments so workers can read only their assigned facility.
-
-### WhatsApp configuration
-
-Set these server-only variables in `.env.local` or the deployment secret manager; never expose them with a `NEXT_PUBLIC_` prefix:
+Alternatively, set the optional `FIREBASE_SERVICE_ACCOUNT_B64` value described in `.env.example`. Keep local environment files and service-account credentials out of Git.
 
 ```bash
-WHATSAPP_TOKEN=
-WHATSAPP_PHONE_NUMBER_ID=
-WHATSAPP_GRAPH_API_VERSION=v25.0
-WHATSAPP_DEMO_RECIPIENT=919876543210
+npm run check-keys
+npm run seed
+npm run dev
 ```
 
-In Meta WhatsApp Cloud API test mode, add the worker number as an allowed test recipient, copy the temporary/system-user access token and phone number ID, then set the variables above. A trusted phone stored on the facility (`whatsappNumber`, `fieldWorkerPhone`, `contactPhone`, or `phone`) takes precedence over `WHATSAPP_DEMO_RECIPIENT`. The browser never sends a recipient number. Without credentials or a recipient, WhatsApp is recorded as failed while in-app delivery continues.
+`check-keys` checks the existing Gemini, Firestore, and Maps configuration; it does **not** validate Gnani credentials. Verify Gnani by completing the voice walkthrough below. Seeding writes generated demo data to the configured Firestore project; use a dedicated demo project.
 
-Run locally with the normal setup commands above. Deploy the rules and empty index manifest when Firebase configuration changes:
+Open `http://localhost:3000` for the district dashboard and `http://localhost:3000/field` for the worker interface. Microphone access requires localhost or HTTPS and browser permission.
+
+## A demo that shows Gnani working
+
+1. Open the district dashboard and the field interface side by side, selecting the same facility.
+2. Choose Hindi, Marathi, or English in the field interface.
+3. Record a short synthetic facility report, such as the ORS example above.
+4. Show Prisma's transcript alongside the proposed stock or staffing values.
+5. Play Timbre's spoken confirmation; replay it with the confirmation control if the browser blocks automatic playback.
+6. Confirm the update, then show the changed facility state and recalculated risk in the district view.
+7. Inspect the resulting forecast or intervention options to show why the report matters.
+
+For troubleshooting, inspect `/api/ai/voice` and `/api/ai/speak` in the browser's Network panel. A successful transcription response includes the transcript and STT metadata; the speech route returns WAV audio. Missing credentials or upstream speech failures should be fixed before recording the submission demo.
+
+## Evaluation and demo data
+
+The demo uses a generated district based on Wardha geography and facility types, with synthetic inventory, staffing, patient activity, and historical records. It is a demonstration dataset, not a live health-system deployment.
 
 ```bash
-npx tsx --env-file=.env.local scripts/deploy-rules.ts
-firebase deploy --only firestore:indexes
+npm test
+npm run lint
+npx tsx scripts/impact-sim.ts
 ```
 
-### Notification demo walkthrough
+The tests cover application behavior, including deterministic engines and server workflows. The impact script simulates transfer decisions over generated data; its output is a scenario result, not measured clinical impact. Neither replaces testing the speech APIs with real recordings made for the demo.
 
-1. Open `/`, select Seloo PHC or another at-risk facility, and review/edit the generated report.
-2. Keep In-App selected, optionally select WhatsApp, and send once.
-3. Open `/field`, choose the same facility, and open the new notification to mark it read.
-4. Select **Acknowledge** after completing the action.
-5. Return to the selected facility in `/`; delivery, read, and acknowledgement update without a refresh.
+The application does not publish measured word-error rate, speech latency, or noisy-audio accuracy. Gnani's platform benchmarks should not be read as HealthGrid measurements. Test the displayed languages, medicine names, quantities, and readback on the device used for the demonstration.
 
-## Team Noida Boys
+The repository currently has demo-oriented access controls. Authentication and facility-level authorization remain necessary before using it with real operational data. See [deployment notes](docs/DEPLOY.md) for the existing hosting setup.
 
-Built by **Nishant Rajpathak** & **Saatvik Das**.
+## Challenge alignment and team
+
+HealthGrid addresses the challenge's practical-use focus through rural health reporting, with a visible role for both Gnani speech APIs. Its strongest demonstration is the full path from a worker's voice to a confirmed operational update.
+
+The [challenge instructions](https://www.gnani.ai/internship) ask entrants to identify their models, explain each member's contribution, and nominate a public working-demo post. Use the actual deployed model versions when submitting. Demo posts should include **#GnaniAI** and **#GreatIndianAIInternshipChallenge**; prepare the individual contribution details alongside the submission.
+
+**Team Noida Boys:** Nishant Rajpathak and Saatvik Das.
+
+This submission builds on the [earlier HealthGrid project](https://github.com/Noida-Boys/Healthgrid-AI), with Gnani-powered field reporting and spoken confirmation as the focus of this challenge presentation.
