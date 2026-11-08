@@ -77,7 +77,9 @@ The field interface offers **Hindi, Marathi, and English**. Examples for demonst
 
 These are suggested demo inputs, not a published speech-accuracy benchmark. Review the actual transcript and proposed values before confirming.
 
-<img src="docs/screenshots/04-field-screen.png" alt="HealthGrid field interface" width="300" height="649" />
+<p align="center">
+  <img src="docs/screenshots/04-field-screen.png" alt="HealthGrid field interface" width="300" height="649" />
+</p>
 
 ## Architecture
 
